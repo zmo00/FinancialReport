@@ -1,0 +1,92 @@
+openapi: 3.0.3
+
+
+info:
+  title: FinancialReport Specification
+  description: Open API specification for a financial accounting project
+  version: 1.0.0
+
+
+servers:
+  - url: https://localhost:8080
+
+
+tags:
+  - name: Authorization
+    description: endpoints for authorization
+
+
+paths:
+
+  /auth/register:
+    post:
+      tags:
+        - Authorization
+      summary: create new Client
+      operationId: registerNewClient
+      requestBody:
+        $ref: "#/components/requestBodies/NewClient"
+      responses:
+        201:
+          description: Successful client creation (OK)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+        400:
+          $ref: "/02-exceptions.yaml#/components/responses/ErrorInfoList"
+        500:
+          $ref: "/02-exceptions.yaml#/components/responses/ErrorInfoList"
+
+
+components:
+
+  requestBodies:
+    NewClient:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Client"
+
+  responses:
+    Client:
+      description: Client
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Client"
+
+  schemas:
+    Client:
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        firstname:
+          type: string
+        lastname:
+          type: string
+        birthday:
+          type: string
+          format: date
+
+    ErrorInfo:
+      type: object
+      properties:
+        code:
+          type: string
+          description: A unique identifier for the error
+        title:
+          type: string
+          description: A brief human-readable message
+        detail:
+          type: string
+          description: A lengthier explanation of the error
+      required:
+        - code
+        - title
