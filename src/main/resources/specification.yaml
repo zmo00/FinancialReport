@@ -8,7 +8,7 @@ info:
 
 
 servers:
-  - url: https://localhost:8080
+  - url: http://localhost:8080/
 
 
 tags:
@@ -18,7 +18,7 @@ tags:
 
 paths:
 
-  /auth/register:
+  /user/api/auth/register:
     post:
       tags:
         - Authorization
@@ -28,25 +28,21 @@ paths:
         $ref: "#/components/requestBodies/NewClient"
       responses:
         201:
-          description: Successful client creation (OK)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Client"
+          $ref: "#/components/responses/Client"
         400:
-          $ref: "/02-exceptions.yaml#/components/responses/ErrorInfoList"
+          $ref: "#/components/responses/ErrorInfoList"
         500:
-          $ref: "/02-exceptions.yaml#/components/responses/ErrorInfoList"
+          $ref: "#/components/responses/ErrorInfoList"
 
 
 components:
-
   requestBodies:
     NewClient:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Client"
+            $ref: "#/components/schemas/NewClient"
+
 
   responses:
     Client:
@@ -56,7 +52,37 @@ components:
           schema:
             $ref: "#/components/schemas/Client"
 
+    ErrorInfoList:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfoList"
+
+
   schemas:
+    NewClient:
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+        email:
+          type: string
+          format: email
+        firstname:
+          type: string
+        lastname:
+          type: string
+        birthday:
+          type: string
+          format: date
+      required:
+        - username
+        - password
+        - email
+
     Client:
       properties:
         id:
@@ -74,6 +100,20 @@ components:
         birthday:
           type: string
           format: date
+      required:
+        - id
+        - username
+        - email
+
+    ErrorInfoList:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorInfo"
+      required:
+        - errors
 
     ErrorInfo:
       type: object

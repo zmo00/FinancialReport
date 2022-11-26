@@ -40,16 +40,13 @@ public class Client implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "clients_roles",
             joinColumns = @JoinColumn(name = "client_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<Role> roles;
-
-    @Transient
-    private Integer age;
 
     public enum Gender {
         MALE,
@@ -58,10 +55,7 @@ public class Client implements UserDetails {
     }
 
     public Integer getAge() {
-        if (age == null) {
-            return Period.between(birthdate, LocalDate.now()).getYears();
-        }
-        return age;
+        return Period.between(birthdate, LocalDate.now()).getYears();
     }
 
     @Override
